@@ -1,0 +1,239 @@
+@use '../../../styles/configs/variables' as v;
+@use '../../../styles/configs/mixins' as m;
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  background-color: v.$background-primary;
+}
+
+.transactions-container {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "filters filters"
+    "main summary"
+    "pagination pagination";
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: auto auto 1fr auto;
+  gap: v.$spacing-lg;
+  padding: v.$spacing-lg;
+  max-width: 1440px;
+  margin: 0 auto;
+
+  @include m.tablet {
+    grid-template-areas:
+      "header"
+      "filters"
+      "main"
+      "pagination";
+    grid-template-columns: 1fr;
+  }
+}
+
+.transactions-header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: v.$spacing-md;
+  border-bottom: 1px solid v.$border-color;
+}
+
+.transactions-title {
+  font-family: v.$font-family-primary;
+  font-size: v.$font-size-h1;
+  font-weight: v.$font-weight-bold;
+  color: v.$text-primary;
+  margin: 0;
+}
+
+.transactions-actions {
+  display: flex;
+  gap: v.$spacing-sm;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-xs;
+  }
+}
+
+.transactions-filters {
+  grid-area: filters;
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$spacing-md;
+  padding: v.$spacing-md;
+  background-color: v.$background-secondary;
+  border-radius: v.$border-radius-md;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 180px;
+  max-width: 250px;
+
+  &--type {
+    flex-basis: 200px;
+  }
+
+  &--status {
+    flex-basis: 180px;
+  }
+}
+
+.clear-filters-btn {
+  align-self: center;
+  height: 56px;
+}
+
+.transactions-list {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-md;
+}
+
+.error-message {
+  grid-area: main;
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-sm;
+  padding: v.$spacing-md;
+  background-color: v.$color-error-light;
+  border: 1px solid v.$color-error;
+  border-radius: v.$border-radius-sm;
+  color: v.$color-error;
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  span {
+    flex: 1;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: v.$spacing-xl;
+  text-align: center;
+  background-color: v.$background-secondary;
+  border-radius: v.$border-radius-md;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: v.$text-secondary;
+    margin-bottom: v.$spacing-md;
+  }
+
+  h3 {
+    font-family: v.$font-family-primary;
+    font-size: v.$font-size-h3;
+    color: v.$text-primary;
+    margin: 0 0 v.$spacing-sm;
+  }
+
+  p {
+    font-size: v.$font-size-body;
+    color: v.$text-secondary;
+    margin: 0;
+  }
+}
+
+.transactions-pagination {
+  grid-area: pagination;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: v.$spacing-md;
+  padding: v.$spacing-md;
+  background-color: v.$background-secondary;
+  border-radius: v.$border-radius-md;
+}
+
+.pagination-info {
+  font-family: v.$font-family-primary;
+  font-size: v.$font-size-body;
+  color: v.$text-primary;
+}
+
+.transactions-summary {
+  grid-area: summary;
+  padding: v.$spacing-md;
+  background-color: v.$background-secondary;
+  border-radius: v.$border-radius-md;
+  height: fit-content;
+  position: sticky;
+  top: v.$spacing-lg;
+
+  @include m.tablet {
+    position: static;
+  }
+}
+
+.summary-title {
+  font-family: v.$font-family-primary;
+  font-size: v.$font-size-h3;
+  font-weight: v.$font-weight-semibold;
+  color: v.$text-primary;
+  margin: 0 0 v.$spacing-md;
+  padding-bottom: v.$spacing-sm;
+  border-bottom: 1px solid v.$border-color;
+}
+
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-sm;
+  margin: 0;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  dt {
+    font-family: v.$font-family-primary;
+    font-size: v.$font-size-body;
+    color: v.$text-secondary;
+  }
+
+  dd {
+    font-family: v.$font-family-primary;
+    font-size: v.$font-size-body;
+    font-weight: v.$font-weight-semibold;
+    color: v.$text-primary;
+    margin: 0;
+  }
+}
+
+.lazy-image-container {
+  position: fixed;
+  bottom: -200px;
+  right: -200px;
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+::ng-deep .mat-mdc-form-field {
+  .mat-mdc-text-field-wrapper {
+    background-color: v.$background-primary;
+  }
+}
+
+::ng-deep .mat-mdc-raised-button {
+  border-radius: v.$border-radius-sm;
+}

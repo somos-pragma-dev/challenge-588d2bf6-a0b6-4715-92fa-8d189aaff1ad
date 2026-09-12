@@ -1,0 +1,171 @@
+<div class="transactions-container"
+     role="region"
+     aria-label="Lista de transacciones">
+  
+  <header class="transactions-header">
+    <h1 class="transactions-title">Transacciones</h1>
+    <div class="transactions-actions">
+      <button mat-raised-button 
+              color="primary"
+              (click)="exportTransactions('csv')"
+              aria-label="Exportar transacciones en formato CSV">
+        <mat-icon>download</mat-icon>
+        Exportar CSV
+      </button>
+      <button mat-raised-button 
+              color="accent"
+              (click)="exportTransactions('pdf')"
+              aria-label="Exportar transacciones en formato PDF">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Exportar PDF
+      </button>
+    </div>
+  </header>
+
+  <section class="transactions-filters" aria-label="Filtros de búsqueda">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Fecha inicio</mat-label>
+      <input matInput 
+             [matDatepicker]="startPicker"
+             [(ngModel)]="filterStartDate"
+             (dateChange)="applyFilters()"
+             aria-label="Fecha de inicio del filtro">
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Fecha fin</mat-label>
+      <input matInput 
+             [matDatepicker]="endPicker"
+             [(ngModel)]="filterEndDate"
+             (dateChange)="applyFilters()"
+             aria-label="Fecha de fin del filtro">
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field filter-field--type">
+      <mat-label>Tipo de transacción</mat-label>
+      <mat-select [(ngModel)]="filterType" 
+                  (selectionChange)="applyFilters()"
+                  aria-label="Tipo de transacción">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="credit">Crédito</mat-option>
+        <mat-option value="debit">Débito</mat-option>
+        <mat-option value="transfer">Transferencia</mat-option>
+        <mat-option value="payment">Pago</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field filter-field--status">
+      <mat-label>Estado</mat-label>
+      <mat-select [(ngModel)]="filterStatus"
+                  (selectionChange)="applyFilters()"
+                  aria-label="Estado de la transacción">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="completed">Completada</mat-option>
+        <mat-option value="pending">Pendiente</mat-option>
+        <mat-option value="failed">Fallida</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button 
+            (click)="clearFilters()"
+            class="clear-filters-btn"
+            aria-label="Limpiar filtros">
+      <mat-icon>clear</mat-icon>
+      Limpiar
+    </button>
+  </section>
+
+  <app-loader *ngIf="loading$ | async" 
+              message="Cargando transacciones">
+  </app-loader>
+
+  <div *ngIf="error$ | async as error" 
+       class="error-message" 
+       role="alert"
+       aria-live="assertive">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+    <button mat-button (click)="retryLoad()">Reintentar</button>
+  </div>
+
+  <main class="transactions-list" 
+        role="list" 
+        aria-label="Listado de transacciones"
+        *ngIf="!(loading$ | async) && !(error$ | async)">
+    
+    <app-transaction-card *ngFor="let transaction of transactions$ | async; trackBy: trackByTransactionId"
+                         [transaction]="transaction"
+                         [highlighted]="selectedTransactionId === transaction.id"
+                         (cardClick)="selectTransaction($event)"
+                         role="listitem"
+                         [attr.aria-selected]="selectedTransactionId === transaction.id">
+    </app-transaction-card>
+
+    <div *ngIf="(transactions$ | async)?.length === 0" 
+         class="empty-state"
+         role="status"
+         aria-label="No hay transacciones">
+      <mat-icon>receipt_long</mat-icon>
+      <h3>No se encontraron transacciones</h3>
+      <p>Intenta modificar los filtros de búsqueda</p>
+    </div>
+  </main>
+
+  <nav class="transactions-pagination" 
+       aria-label="Paginación de transacciones"
+       *ngIf="totalPages > 1">
+    <button mat-icon-button 
+            [disabled]="currentPage === 1"
+            (click)="goToPage(currentPage - 1)"
+            aria-label="Página anterior">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    
+    <span class="pagination-info" aria-live="polite">
+      Página {{ currentPage }} de {{ totalPages }}
+    </span>
+    
+    <button mat-icon-button
+            [disabled]="currentPage === totalPages"
+            (click)="goToPage(currentPage + 1)"
+            aria-label="Página siguiente">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </nav>
+
+  <aside class="transactions-summary" aria-label="Resumen de transacciones">
+    <h2 class="summary-title">Resumen</h2>
+    <dl class="summary-list">
+      <div class="summary-item">
+        <dt>Total transacciones</dt>
+        <dd>{{ (summary$ | async)?.totalCount || 0 }}</dd>
+      </div>
+      <div class="summary-item">
+        <dt>Monto total</dt>
+        <dd>{{ (summary$ | async)?.totalAmount | currency:'USD' }}</dd>
+      </div>
+      <div class="summary-item">
+        <dt>Transacciones crédito</dt>
+        <dd>{{ (summary$ | async)?.creditCount || 0 }}</dd>
+      </div>
+      <div class="summary-item">
+        <dt>Transacciones débito</dt>
+        <dd>{{ (summary$ | async)?.debitCount || 0 }}</dd>
+      </div>
+    </dl>
+  </aside>
+</div>
+
+<picture class="lazy-image-container" aria-hidden="true">
+  <source srcset="assets/optimized/decorative-pattern.webp" type="image/webp">
+  <img src="assets/optimized/decorative-pattern.png" 
+       alt=""
+       loading="lazy"
+       decoding="async"
+       width="200"
+       height="200">
+</picture>

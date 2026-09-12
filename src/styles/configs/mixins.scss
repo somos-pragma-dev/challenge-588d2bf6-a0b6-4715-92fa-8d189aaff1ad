@@ -1,0 +1,418 @@
+// Mixins reutilizables para optimización de estilos y consistencia del diseño
+
+// Breakpoints responsive - mobile first
+@mixin breakpoint-sm {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin breakpoint-md {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin breakpoint-lg {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin breakpoint-xl {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin breakpoint-2xl {
+  @media (min-width: $breakpoint-2xl) {
+    @content;
+  }
+}
+
+// Mixin para optimización de renderizado
+@mixin will-change($property: auto) {
+  will-change: $property;
+  backface-visibility: hidden;
+}
+
+@mixin contain-layout {
+  contain: layout style;
+}
+
+@mixin contain-strict {
+  contain: strict;
+}
+
+// Focus visible para accesibilidad
+@mixin focus-visible {
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @content;
+  }
+}
+
+@mixin focus-ring {
+  @include focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+// Tipografía responsiva
+@mixin heading-1 {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  letter-spacing: -0.025em;
+
+  @include breakpoint-md {
+    font-size: 2.5rem;
+  }
+
+  @include breakpoint-lg {
+    font-size: $font-size-4xl;
+  }
+}
+
+@mixin heading-2 {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  letter-spacing: -0.025em;
+
+  @include breakpoint-md {
+    font-size: 1.75rem;
+  }
+
+  @include breakpoint-lg {
+    font-size: $font-size-2xl;
+  }
+}
+
+@mixin heading-3 {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-base;
+
+  @include breakpoint-md {
+    font-size: 1.25rem;
+  }
+
+  @include breakpoint-lg {
+    font-size: $font-size-xl;
+  }
+}
+
+@mixin body-text {
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+}
+
+@mixin caption-text {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+  color: $color-gray-600;
+}
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+// Grid system
+@mixin grid-auto-fit($min-width: 280px, $gap: $spacing-4) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: $gap;
+}
+
+@mixin grid($columns: 1, $gap: $spacing-4) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+}
+
+// Layout containers
+@mixin container {
+  width: 100%;
+  max-width: $container-xl;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $spacing-4;
+  padding-right: $spacing-4;
+
+  @include breakpoint-md {
+    padding-left: $spacing-6;
+    padding-right: $spacing-6;
+  }
+}
+
+@mixin container-narrow {
+  @include container;
+  max-width: $container-lg;
+}
+
+// Cards y superficies
+@mixin card-base {
+  background-color: $bg-color-base;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-base;
+  border: 1px solid $color-gray-200;
+}
+
+@mixin card-interactive {
+  @include card-base;
+  transition: box-shadow $transition-base, transform $transition-base;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: $shadow-base;
+  }
+}
+
+// Botones
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2 $spacing-4;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  border-radius: $radius-md;
+  border: $border-width-1 solid transparent;
+  cursor: pointer;
+  transition: all $transition-base;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: $opacity-50;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $color-primary;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-700;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $color-primary-800;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: transparent;
+  color: $color-primary;
+  border-color: $color-primary;
+
+  &:hover:not(:disabled) {
+    background-color: rgba($color-primary, 0.08);
+  }
+
+  &:active:not(:disabled) {
+    background-color: rgba($color-primary, 0.16);
+  }
+}
+
+@mixin button-ghost {
+  @include button-base;
+  background-color: transparent;
+  color: $color-gray-700;
+
+  &:hover:not(:disabled) {
+    background-color: $bg-color-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $bg-color-active;
+  }
+}
+
+// Formularios
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $color-gray-900;
+  background-color: $bg-color-base;
+  border: 1px solid $color-gray-300;
+  border-radius: $radius-md;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &::placeholder {
+    color: $color-gray-500;
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: $color-gray-400;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+  }
+
+  &:disabled {
+    background-color: $color-gray-100;
+    cursor: not-allowed;
+  }
+}
+
+@mixin label-base {
+  display: block;
+  margin-bottom: $spacing-1;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-gray-700;
+}
+
+// Truncate text
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Visually hidden - accesible
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Animaciones optimizadas para rendimiento
+@mixin fade-in($duration: $duration-normal) {
+  animation: fadeIn $duration $transition-timing-ease-out forwards;
+}
+
+@mixin slide-up($duration: $duration-normal) {
+  animation: slideUp $duration $transition-timing-ease-out forwards;
+}
+
+@mixin pulse {
+  animation: pulse 2s $transition-timing-ease-in-out infinite;
+}
+
+// Skeleton loading
+@mixin skeleton {
+  background: linear-gradient(
+    90deg,
+    $color-gray-200 25%,
+    $color-gray-100 50%,
+    $color-gray-200 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+  border-radius: $radius-base;
+}
+
+// Scrollbar personalizada
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-gray-100;
+    border-radius: $radius-full;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-gray-400;
+    border-radius: $radius-full;
+
+    &:hover {
+      background: $color-gray-500;
+    }
+  }
+}
+
+// Overlay
+@mixin overlay($z-index: $z-modal-backdrop) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $bg-color-overlay;
+  z-index: $z-index;
+}
+
+// Smooth scroll
+@mixin smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+// Hide scrollbar but keep functionality
+@mixin hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
